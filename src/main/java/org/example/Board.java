@@ -16,7 +16,7 @@ public class Board {
 
     public boolean makeMove(int column, char symbol) {
         if (column < 0 || column >= COLUMNS) {
-            return false; // Érvénytelen oszlop
+            return false;
         }
 
         for (int row = ROWS - 1; row >= 0; row--) {
@@ -26,20 +26,20 @@ public class Board {
             }
         }
 
-        return false; // Az oszlop tele van
+        return false;
     }
 
     public boolean isFull() {
         for (int col = 0; col < COLUMNS; col++) {
             if (grid[0][col] == '.') {
-                return false; // Még van szabad hely
+                return false;
             }
         }
-        return true; // A tábla megtelt
+        return true;
     }
 
     public char[][] getGrid() {
-        return grid; // Getter a tábla állapotához
+        return grid;
     }
 
     public void printBoard() {

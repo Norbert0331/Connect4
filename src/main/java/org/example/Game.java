@@ -10,7 +10,7 @@ public class Game {
         this.board = new Board();
         this.player1 = player1;
         this.player2 = player2;
-        this.currentPlayer = player1; // Az első játékos kezd
+        this.currentPlayer = player1;
     }
 
     public void playGame() {
@@ -37,8 +37,6 @@ public class Game {
     }
 
     private int getPlayerMove() {
-        // Alapértelmezett módszer a játékos lépésének bekérésére
-        // Feltételezve, hogy itt egy scanner-rel kapjuk be a bemenetet
         java.util.Scanner scanner = new java.util.Scanner(System.in);
         return scanner.nextInt();
     }
@@ -75,10 +73,10 @@ public class Game {
                 if (board.getGrid()[row][col] == symbol) {
                     count++;
                     if (count == 4) {
-                        return true; // Négy azonos korong van függőlegesen
+                        return true;
                     }
                 } else {
-                    count = 0; // Ha nem azonos a jel, a számlálót lenullázzuk
+                    count = 0;
                 }
             }
         }
@@ -86,7 +84,6 @@ public class Game {
     }
 
     private boolean checkDiagonal(char symbol) {
-        // Balról jobbra átló vizsgálata "/"
         for (int row = 0; row < Board.ROWS - 3; row++) {
             for (int col = 0; col < Board.COLUMNS - 3; col++) {
                 if (board.getGrid()[row][col] == symbol &&
@@ -98,7 +95,6 @@ public class Game {
             }
         }
 
-        // Jobbról balra átló vizsgálata "\"
         for (int row = 0; row < Board.ROWS - 3; row++) {
             for (int col = 3; col < Board.COLUMNS; col++) {
                 if (board.getGrid()[row][col] == symbol &&
