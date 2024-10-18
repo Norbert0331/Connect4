@@ -56,10 +56,10 @@ public class Game {
                 if (board.getGrid()[row][col] == symbol) {
                     count++;
                     if (count == 4) {
-                        return true; // Négy azonos korong van vízszintesen
+                        return true;
                     }
                 } else {
-                    count = 0; // Ha nem azonos a jel, a számlálót lenullázzuk
+                    count = 0;
                 }
             }
         }
