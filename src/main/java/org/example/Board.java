@@ -1,5 +1,7 @@
 package org.example;
 
+import java.io.*;
+
 public class Board {
     private final int rows = 6;
     private final int columns = 7;
@@ -11,6 +13,34 @@ public class Board {
             for (int j = 0; j < columns; j++) {
                 grid[i][j] = ' ';
             }
+        }
+    }
+    public void saveToFile(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    writer.write(grid[i][j]);
+                }
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving board to file: " + e.getMessage());
+        }
+    }
+
+    public void loadFromFile(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            for (int i = 0; i < rows; i++) {
+                String line = reader.readLine();
+                if (line == null || line.length() != columns) {
+                    throw new IOException("Invalid file format.");
+                }
+                for (int j = 0; j < columns; j++) {
+                    grid[i][j] = line.charAt(j);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading board from file: " + e.getMessage());
         }
     }
 
@@ -67,7 +97,7 @@ public class Board {
     }
 
     private boolean checkDiagonal(char symbol) {
-        // Check \ diagonal
+        // Check \
         for (int i = 0; i <= rows - 4; i++) {
             for (int j = 0; j <= columns - 4; j++) {
                 if (grid[i][j] == symbol && grid[i + 1][j + 1] == symbol && grid[i + 2][j + 2] == symbol && grid[i + 3][j + 3] == symbol) {
@@ -75,7 +105,7 @@ public class Board {
                 }
             }
         }
-        // Check / diagonal
+        // Check /
         for (int i = 3; i < rows; i++) {
             for (int j = 0; j <= columns - 4; j++) {
                 if (grid[i][j] == symbol && grid[i - 1][j + 1] == symbol && grid[i - 2][j + 2] == symbol && grid[i - 3][j + 3] == symbol) {

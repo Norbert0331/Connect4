@@ -21,18 +21,58 @@ public class Game {
     }
 
     public void playGame() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Game started!");
         board.printBoard();
 
         while (true) {
-            System.out.println(currentPlayer.getName() + "'s turn (Symbol: " + currentPlayer.getSymbol() + ")");
-            int column;
-
             if (againstComputer && currentPlayer == player2) {
-                column = getComputerMove();
-                System.out.println("Computer chooses column: " + (column + 1));
-            } else {
-                column = getPlayerMove();
+                System.out.println("Computer's turn (Symbol: " + currentPlayer.getSymbol() + ")");
+                int column = getComputerMove();
+                board.dropDisc(column, currentPlayer.getSymbol());
+                board.printBoard();
+
+                if (board.checkWin(currentPlayer.getSymbol())) {
+                    System.out.println(currentPlayer.getName() + " wins!");
+                    dbManager.recordWin(currentPlayer.getName());
+                    break;
+                }
+
+                if (board.isFull()) {
+                    System.out.println("The game is a draw!");
+                    break;
+                }
+
+                switchPlayer();
+                continue;
+            }
+
+            System.out.println(currentPlayer.getName() + "'s turn (Symbol: " + currentPlayer.getSymbol() + ")");
+            System.out.println("Enter a column (1-7) to play, or type 'save' to save the game, or 'load' to load a game:");
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("save")) {
+                System.out.print("Enter the filename to save the board: ");
+                String filename = scanner.nextLine();
+                board.saveToFile(filename);
+                System.out.println("Game saved to " + filename);
+                continue;
+            }
+
+            if (input.equalsIgnoreCase("load")) {
+                System.out.print("Enter the filename to load the board: ");
+                String filename = scanner.nextLine();
+                board.loadFromFile(filename);
+                board.printBoard();
+                continue;
+            }
+
+            int column;
+            try {
+                column = Integer.parseInt(input) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 7, or 'save'/'load'.");
+                continue;
             }
 
             if (board.isValidMove(column)) {
@@ -60,22 +100,8 @@ public class Game {
         System.out.println("Game over. Thanks for playing!");
     }
 
-    int getPlayerMove() {
-        System.out.print("Enter a column (1-7): ");
-        Scanner scanner = new Scanner(System.in);
-        while (!scanner.hasNextInt()) {
-            System.out.println("Invalid input. Please enter a number between 1 and 7.");
-            scanner.next();
-        }
-        int column = scanner.nextInt() - 1;
-        if (column < 0 || column >= board.getColumns()) {
-            System.out.println("Column out of range. Please enter a valid column.");
-            return getPlayerMove();
-        }
-        return column;
-    }
 
-    private int getComputerMove() {
+    public int getComputerMove() {
         Random random = new Random();
         int column;
         do {

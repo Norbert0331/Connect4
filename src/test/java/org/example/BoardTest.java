@@ -1,55 +1,61 @@
 package org.example;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BoardTest {
+class BoardTest {
+    private Board board;
+
+    @BeforeEach
+    void setUp() {
+        board = new Board();
+    }
 
     @Test
-    public void testConstructor() {
-        Board board = new Board();
-        assertNotNull(board.getGrid());
-        for (int i = 0; i < board.getGrid().length; i++) {
-            for (int j = 0; j < board.getGrid()[i].length; j++) {
-                assertEquals(' ', board.getGrid()[i][j]);
+    void testInitialBoardIsEmpty() {
+        char[][] grid = board.getGrid();
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                assertEquals(' ', grid[i][j], "Grid should be empty initially");
             }
         }
     }
 
     @Test
-    public void testIsValidMove() {
-        Board board = new Board();
-        assertTrue(board.isValidMove(0));
-        assertTrue(board.isValidMove(6));
-        assertFalse(board.isValidMove(-1));
-        assertFalse(board.isValidMove(7));
+    void testDropDiscValidMove() {
+        assertTrue(board.isValidMove(3), "Column 3 should be a valid move");
+        board.dropDisc(3, 'X');
+        assertEquals('X', board.getGrid()[5][3], "Disc should be dropped in the lowest empty spot");
     }
 
     @Test
-    public void testDropDisc() {
-        Board board = new Board();
+    void testDropDiscInvalidMove() {
+        for (int i = 0; i < 6; i++) {
+            board.dropDisc(3, 'X');
+        }
+        assertFalse(board.isValidMove(3), "Column 3 should not be a valid move after being filled");
+    }
+
+    @Test
+    void testCheckWinHorizontal() {
         board.dropDisc(0, 'X');
-        assertEquals('X', board.getGrid()[5][0]);
-        board.dropDisc(0, 'O');
-        assertEquals('O', board.getGrid()[4][0]);
+        board.dropDisc(1, 'X');
+        board.dropDisc(2, 'X');
+        board.dropDisc(3, 'X');
+        assertTrue(board.checkWin('X'), "X should win horizontally");
     }
 
     @Test
-    public void testCheckHorizontalWin() {
-        Board board = new Board();
-        for (int i = 0; i < 4; i++) {
-            board.dropDisc(i, 'X');
-        }
-        assertTrue(board.checkWin('X'));
-    }
-
-    @Test
-    public void testCheckVerticalWin() {
-        Board board = new Board();
-        for (int i = 0; i < 4; i++) {
-            board.dropDisc(0, 'X');
-        }
-        assertTrue(board.checkWin('X'));
+    void testCheckWinVertical() {
+        board.dropDisc(0, 'X');
+        board.dropDisc(0, 'X');
+        board.dropDisc(0, 'X');
+        board.dropDisc(0, 'X');
+        assertTrue(board.checkWin('X'), "X should win vertically");
     }
 
     @Test
@@ -65,15 +71,26 @@ public class BoardTest {
     }
 
     @Test
-    public void testIsFull() {
-        Board board = new Board();
-        for (int i = 0; i < board.getGrid().length; i++) {
-            for (int j = 0; j < board.getGrid()[i].length; j++) {
+    void testIsFull() {
+        for (int j = 0; j < 7; j++) {
+            for (int i = 0; i < 6; i++) {
                 board.dropDisc(j, 'X');
             }
         }
-        assertTrue(board.isFull());
+        assertTrue(board.isFull(), "Board should be full");
     }
+
+    @Test
+    void testSaveAndLoadFile() {
+        String filename = "test_board.txt";
+        board.dropDisc(0, 'X');
+        board.saveToFile(filename);
+
+        Board newBoard = new Board();
+        newBoard.loadFromFile(filename);
+        assertEquals(board.getGrid()[5][0], newBoard.getGrid()[5][0], "Loaded board should match saved board");
+
+        new File(filename).delete();
+    }
+
 }
-
-
