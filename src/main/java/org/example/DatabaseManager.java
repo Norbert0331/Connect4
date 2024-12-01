@@ -25,9 +25,6 @@ public class DatabaseManager {
         }
     }
 
-    public DatabaseManager(Connection mockConnection) {
-    }
-
     public void recordWin(String playerName) {
         try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
             String updateSQL = """
