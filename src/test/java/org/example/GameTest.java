@@ -4,21 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import java.util.Random;
-import java.util.Scanner;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
 
-    @Mock
-    private DatabaseManager mockDbManager;
-
-    @Mock
-    private Scanner mockScanner;
-
-    @Mock
-    private Random mockRandom;
 
     private Game game;
     private Player player1;
